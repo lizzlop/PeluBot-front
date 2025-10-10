@@ -27,4 +27,10 @@ export const rules = {
   date: {
     required: "La fecha es obligatoria",
   },
+  barber: {
+    required: "La fecha es obligatoria",
+  },
+  time: {
+    required: "La hora es obligatoria",
+  },
 };

@@ -1,16 +1,45 @@
 import { useForm } from "react-hook-form";
+import { useMutation } from "@apollo/client/react";
+import { gql } from "@apollo/client";
+
 import { rules } from "../utils/utils";
 import { FormInput } from "../components/FormInput";
 import { FormTextArea } from "../components/FormTextArea";
 import { FormDate } from "../components/FormDate";
+import { FormSelect } from "../components/FormSelect";
+
+const CREATE_APPOINTMENT = gql`
+  mutation CreateAppointment(
+    $name: String!
+    $barber: String!
+    $date: String!
+    $time: String!
+  ) {
+    createAppointment(name: $name, barber: $barber, date: $date, time: $time) {
+      name
+    }
+  }
+`;
 
 export const AppointmentForm = () => {
+  const [createAppointment] = useMutation(CREATE_APPOINTMENT);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
+
+  const onSubmit = (newAppointment) => {
+    console.log(newAppointment);
+    createAppointment({
+      variables: {
+        name: newAppointment.name,
+        barber: newAppointment.barber,
+        date: newAppointment.date,
+        time: newAppointment.time,
+      },
+    });
+  };
 
   return (
     <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
@@ -49,41 +78,22 @@ export const AppointmentForm = () => {
         />
 
         {/* Time */}
-        <div>
-          <label
-            htmlFor="time"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Hora de la cita
-          </label>
-          <input
-            id="time"
-            type="time"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-            {...register("time", { required: true })}
-          />
-        </div>
+        <FormSelect
+          label="Selecciona el horario de tu cita"
+          name="time"
+          register={register}
+          rules={rules.time}
+          error={errors.time}
+        />
 
-        {/* Service */}
-        <div>
-          <label
-            htmlFor="barber"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Barbero
-          </label>
-          <select
-            id="barber"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-            {...register("barber", { required: true })}
-          >
-            {/* TODO: Ponerlo dinámico */}
-            <option value="">Selecciona un barbero</option>
-            <option value="Santiago">Santiago</option>
-            <option value="Daniel">Daniel</option>
-            <option value="Luca">Luca</option>
-          </select>
-        </div>
+        {/* Barber */}
+        <FormSelect
+          label="Selecciona un barbero"
+          name="barber"
+          register={register}
+          rules={rules.barber}
+          error={errors.barber}
+        />
 
         {/* Message */}
         <FormTextArea

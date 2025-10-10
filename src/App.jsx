@@ -1,9 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AppointmentForm } from "./pages/AppointmentForm";
 import "./App.css";
+import { AppointmentForm } from "./pages/AppointmentForm";
 
 function App() {
-
   return (
     <BrowserRouter>
       <Routes>
