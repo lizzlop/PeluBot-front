@@ -34,3 +34,16 @@ export const rules = {
     required: "La hora es obligatoria",
   },
 };
+
+export const bussinessHours = [
+  {
+    daysOfWeek: [1, 2, 3, 4, 5, 6],
+    startTime: "09:00",
+    endTime: "13:00",
+  },
+  {
+    daysOfWeek: [1, 2, 3, 4, 5, 6],
+    startTime: "14:00",
+    endTime: "20:00",
+  },
+];
