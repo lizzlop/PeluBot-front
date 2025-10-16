@@ -1,12 +1,12 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { AppointmentCalendar } from "./pages/AppointmentCalendar";
+import { AppointmentChat } from "./pages/AppointmentChat";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<AppointmentCalendar />} />
+        <Route path="/" element={<AppointmentChat />} />
       </Routes>
     </BrowserRouter>
   );
