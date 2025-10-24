@@ -1,25 +1,12 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client/react";
-import { gql } from "@apollo/client";
 
 import { rules } from "../utils/utils";
 import { FormInput } from "../components/FormInput";
 import { FormTextArea } from "../components/FormTextArea";
 import { FormDate } from "../components/FormDate";
 import { FormSelect } from "../components/FormSelect";
-
-const CREATE_APPOINTMENT = gql`
-  mutation CreateAppointment(
-    $name: String!
-    $barber: String!
-    $date: String!
-    $time: String!
-  ) {
-    createAppointment(name: $name, barber: $barber, date: $date, time: $time) {
-      name
-    }
-  }
-`;
+import { CREATE_APPOINTMENT } from "../services/services";
 
 export const AppointmentForm = () => {
   const [createAppointment] = useMutation(CREATE_APPOINTMENT);

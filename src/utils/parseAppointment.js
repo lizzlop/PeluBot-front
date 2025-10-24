@@ -18,5 +18,6 @@ export const parseAppointment = (data) => {
     title: appointment.name,
     start: appointment.date,
     end: endDate(appointment.date),
+    color: "#845442", //TODO: Cambiar cuando ya este la BD
   }));
 };

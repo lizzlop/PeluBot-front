@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client/react";
-import { gql } from "@apollo/client";
 
 //Full calendar
 import FullCalendar from "@fullcalendar/react";
@@ -9,27 +8,10 @@ import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
 import { bussinessHours } from "../utils/utils";
 import { parseAppointment } from "../utils/parseAppointment";
-
-const GET_APPOINTMENTS = gql`
-  query GetAppointments {
-    getAppointments {
-      id
-      name
-      date
-      barber
-      time
-    }
-  }
-`;
-
-const GET_APPOINTMENTS_BY_BARBER = gql`
-  query GetAppointmentsByBarber($barber: String!) {
-    getAppointmentsByBarber(barber: $barber) {
-      name
-      date
-    }
-  }
-`;
+import {
+  GET_APPOINTMENTS,
+  GET_APPOINTMENTS_BY_BARBER,
+} from "../services/services";
 
 export const AppointmentCalendar = () => {
   const [events, setEvents] = useState([{}]);
@@ -49,16 +31,15 @@ export const AppointmentCalendar = () => {
   });
 
   useEffect(() => {
-    if (getAppByBarberData?.getAppointmentsByBarber) {
-      const newEvents = parseAppointment(
-        getAppByBarberData.getAppointmentsByBarber
-      );
+    if (getAppData?.getAppointments) {
+      const newEvents = parseAppointment(getAppData.getAppointments);
+      console.log("🎉 newEvents", newEvents);
       setEvents(newEvents);
     }
-  }, [getAppByBarberData]);
+  }, [getAppData]);
 
-  if (getAppByBarberLoading) return <p>Data loading...</p>;
-  if (getAppByBarberError) return <p>Error: {error.message}</p>;
+  if (getAppLoading) return <p>Data loading...</p>;
+  if (getAppError) return <p>Error: {getAppError.message}</p>;
 
   return (
     <div className="p-4">
@@ -84,6 +65,11 @@ export const AppointmentCalendar = () => {
         businessHours={bussinessHours}
         allDaySlot={false}
         height="auto"
+        dayCellDidMount={(arg) => {
+          if (arg.isToday) {
+            arg.el.style.backgroundColor = "#FFF5EF";
+          }
+        }}
       />
     </div>
   );
