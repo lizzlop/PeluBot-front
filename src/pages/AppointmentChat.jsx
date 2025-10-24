@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@apollo/client/react";
+import { useForm } from "react-hook-form";
 
 import { RUN_AGENT } from "../services/services";
-import { useForm } from "react-hook-form";
+import barber from "../assets/barber.png";
+import { useNavigate } from "react-router-dom";
 
 export const AppointmentChat = () => {
   const getLocalTime = () => {
@@ -13,12 +15,13 @@ export const AppointmentChat = () => {
   };
   console.log("🎉 localTime", getLocalTime());
 
+  const navigate = useNavigate();
   const messagesEndRef = useRef(null);
   const [messages, setMessages] = useState([
     {
       id: 1,
       sender: "system",
-      text: "Hola. ¿En qué puedo ayudarte hoy? Puedo crear, reprogramar o cancelar citas",
+      text: "Hola. ¿En qué puedo ayudarte hoy?\nPuedo crear, reprogramar o cancelar citas",
       time: getLocalTime(),
     },
   ]);
@@ -27,17 +30,13 @@ export const AppointmentChat = () => {
   }, [messages]);
   const [runAgent] = useMutation(RUN_AGENT);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   const handleSend = async (data) => {
     console.log("🎉 input", data.message);
     if (data.message == "") return;
     const newMessage = {
+      id: new Date(),
       sender: "user",
       text: data.message,
       time: getLocalTime(),
@@ -55,6 +54,7 @@ export const AppointmentChat = () => {
       const parseResult = JSON.parse(result.data.runAgent);
       console.log("🎉 parseResult", parseResult);
       const responseMessage = {
+        id: new Date() + 1,
         sender: "system",
         text: parseResult.message,
         time: getLocalTime(),
@@ -63,17 +63,25 @@ export const AppointmentChat = () => {
       setMessages((prev) => [...prev, responseMessage]);
     } catch (error) {
       console.log(`❌ Error runing agent: ${error}`);
+      const errorMessage = {
+        id: new Date() + 1,
+        sender: "system",
+        text: `Estoy teniendo problemas para responder tu mensaje. \n Por favor espera unos minutos o crea tu cita manualmente.`,
+        time: getLocalTime(),
+        button: true,
+      };
+      setMessages((prev) => [...prev, errorMessage]);
     }
   };
 
   return (
-    <div className="bg-white flex items-center justify-center p-4">
+    <div className="bg-white flex items-center justify-center mt-20 p-5">
       <div className="bg-white rounded-2xl shadow-lg w-full max-w-md">
         {/* Chat Header */}
-        <div className="bg-blue-500 text-white p-4 rounded-t-2xl">
+        <div className="bg-amber-700 text-white p-4 rounded-t-2xl">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-blue-300 rounded-full flex items-center justify-center">
-              <span className="font-semibold">U</span>
+            <div className="w-12 h-12 flex items-center justify-center">
+              <img alt="barber_icon" src={barber}></img>
             </div>
             <div>
               <h2 className="font-semibold">PeluBot</h2>
@@ -87,20 +95,30 @@ export const AppointmentChat = () => {
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex white-space: pre-line ${
+              className={`flex whitespace-pre-line ${
                 message.sender === "user" ? "justify-end" : "justify-start"
               }`}
             >
               <div
                 className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
                   message.sender === "user"
-                    ? "bg-blue-500 text-white rounded-br-none"
+                    ? "bg-indigo-950 text-white rounded-br-none"
                     : "bg-gray-200 text-gray-800 rounded-bl-none"
                 }`}
               >
                 <p className="text-sm">{message.text}</p>
+                {message.button ? (
+                  <button
+                    onClick={() => navigate("/form")}
+                    className="mt-3 px-4 py-2 rounded-sm cursor-pointer transition-colors duration-200 bg-indigo-950 text-gray-100 hover:bg-indigo-900"
+                  >
+                    Crea tu cita manualmente
+                  </button>
+                ) : (
+                  <></>
+                )}
                 <p
-                  className={`text-xs mt-1 ${
+                  className={`flex text-xs mt-1 justify-end ${
                     message.sender === "user"
                       ? "text-blue-100"
                       : "text-gray-500"
@@ -126,7 +144,7 @@ export const AppointmentChat = () => {
               />
               <button
                 type="submit"
-                className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-blue-600 transition-colors"
+                className="bg-amber-700 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-amber-600 transition-colors"
               >
                 <svg
                   className="w-5 h-5"

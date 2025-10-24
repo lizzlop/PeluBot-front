@@ -1,15 +1,15 @@
 /**
  * Palette
-    <color name="Bole" hex="845442" r="132" g="84" b="66" />
-    <color name="Space cadet" hex="3A3456" r="58" g="52" b="86" />
-    <color name="Khaki" hex="C6B6A4" r="198" g="182" b="164" />
-    <color name="Cool gray" hex="9591C2" r="149" g="145" b="194" />
-    <color name="Space cadet" hex="362E55" r="54" g="46" b="85" />
+    space: indigo-950
+    brown: amber-700
+    pale yellow: amber-100
+    khaki: orange-100
+    gris: gray-700
  */
 
 const regex = {
-  lettersOnly: /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/i,
-  numbersOnly: /^[0-9]{10}$/,
+  lettersOnly: /^[a-záéíóúñ\s]+$/i,
+  numbersOnly: /^\d{10}$/,
 };
 
 export const rules = {
@@ -56,5 +56,3 @@ export const bussinessHours = [
     endTime: "20:00",
   },
 ];
-
-export const palette = [];

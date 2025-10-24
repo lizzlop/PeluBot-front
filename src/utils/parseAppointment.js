@@ -16,6 +16,7 @@ const endDate = (startDate) => {
 export const parseAppointment = (data) => {
   return data.map((appointment) => ({
     title: appointment.name,
+    barber: appointment.barber,
     start: appointment.date,
     end: endDate(appointment.date),
     color: "#845442", //TODO: Cambiar cuando ya este la BD
