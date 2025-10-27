@@ -2,8 +2,8 @@ import PropTypes from "prop-types";
 
 export const FormDate = ({ label, name, register, rules, error }) => {
   const today = new Date();
-  const oneMonthLater = new Date();
-  oneMonthLater.setMonth(today.getMonth() + 1);
+  const oneWeekLater = new Date();
+  oneWeekLater.setDate(today.getDate() + 7);
 
   const formatDate = (date) => date.toISOString().split("T")[0];
 
@@ -19,7 +19,7 @@ export const FormDate = ({ label, name, register, rules, error }) => {
         id={name}
         type="date"
         min={formatDate(today)}
-        max={formatDate(oneMonthLater)}
+        max={formatDate(oneWeekLater)}
         className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
         {...register(name, rules)}
       />

@@ -9,7 +9,7 @@
 
 const regex = {
   lettersOnly: /^[a-záéíóúñ\s]+$/i,
-  numbersOnly: /^\d{10}$/,
+  numbersOnly: /^\d+$/,
 };
 
 export const rules = {
@@ -25,6 +25,14 @@ export const rules = {
     pattern: {
       value: regex.numbersOnly,
       message: "Solo se permiten números",
+    },
+    minLength: {
+      value: 10,
+      message: "El número de celular debe tener 10 dígitos",
+    },
+    maxLength: {
+      value: 10,
+      message: "El número de celular debe tener 10 dígitos",
     },
   },
   message: {

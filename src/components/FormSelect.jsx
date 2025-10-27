@@ -1,22 +1,31 @@
 import PropTypes from "prop-types";
 
-export const FormSelect = ({ label, name, register, rules, error }) => {
-  //TODO: make this dynamic
-  const options =
-    name == "barber"
-      ? ["Santiago", "Daniel", "Luca"]
-      : [
-          "9:00 am",
-          "10:00am",
-          "11:00am",
-          "12:00pm",
-          "2:00pm",
-          "3:00pm",
-          "4:00pm",
-          "5:00pm",
-          "6:00pm",
-          "7:00pm",
-        ];
+export const FormSelect = ({
+  label,
+  name,
+  options,
+  register,
+  rules,
+  error,
+}) => {
+  const disableSelect = !options || options.length === 0;
+  console.log("🎉 options", options);
+  //TODO: make this dynamic and whit am and pm
+  // const options =
+  //   name == "barber"
+  //     ? ["Santiago", "Daniel", "Luca"]
+  //     : [
+  //         "09:00",
+  //         "10:00",
+  //         "11:00",
+  //         "12:00",
+  //         "14:00",
+  //         "15:00",
+  //         "16:00",
+  //         "17:00",
+  //         "18:00",
+  //         "19:00",
+  //       ];
 
   return (
     <div>
@@ -28,10 +37,11 @@ export const FormSelect = ({ label, name, register, rules, error }) => {
       </label>
       <select
         id={name}
-        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+        disabled={disableSelect}
+        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900 disabled:bg-gray-100 disabled:text-gray-400"
         {...register(name, rules)}
       >
-        {options.map((option) => (
+        {options?.map((option) => (
           <option key={option} value={option}>
             {option}
           </option>
@@ -45,6 +55,7 @@ export const FormSelect = ({ label, name, register, rules, error }) => {
 FormSelect.propTypes = {
   label: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  options: PropTypes.array,
   placeholder: PropTypes.string.isRequired,
   register: PropTypes.func.isRequired,
   rules: PropTypes.object,

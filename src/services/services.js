@@ -1,5 +1,15 @@
 import { gql } from "@apollo/client";
 
+export const GET_BARBERS = gql`
+  query GetBarbers {
+    getBarbers {
+      id
+      name
+      color
+    }
+  }
+`;
+
 export const GET_APPOINTMENTS = gql`
   query GetAppointments {
     getAppointments {
@@ -11,24 +21,23 @@ export const GET_APPOINTMENTS = gql`
   }
 `;
 
-export const GET_APPOINTMENTS_BY_BARBER = gql`
-  query GetAppointmentsByBarber($barber: String!) {
-    getAppointmentsByBarber(barber: $barber) {
-      name
-      date
-    }
-  }
-`;
-
 export const CREATE_APPOINTMENT = gql`
   mutation CreateAppointment(
     $name: String!
     $barber: String!
     $date: String!
-    $time: String!
+    $phone: String!
+    $message: String
   ) {
-    createAppointment(name: $name, barber: $barber, date: $date, time: $time) {
-      name
+    createAppointment(
+      name: $name
+      barber: $barber
+      date: $date
+      phone: $phone
+      message: $message
+    ) {
+      success
+      message
     }
   }
 `;
