@@ -1,11 +1,26 @@
 import PropTypes from "prop-types";
+import { Controller } from "react-hook-form";
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/themes/airbnb.css"; // Temas disponibles: dark, material_blue, etc.
 
-export const FormDate = ({ label, name, register, rules, error }) => {
-  const today = new Date();
-  const oneWeekLater = new Date();
-  oneWeekLater.setDate(today.getDate() + 7);
-
-  const formatDate = (date) => date.toISOString().split("T")[0];
+export const FormDate = ({ label, name, control, rules, error }) => {
+  const opciones = {
+    altInput: false,
+    enableTime: true,
+    noCalendar: false,
+    dateFormat: "Y-m-d h:i K",
+    minuteIncrement: 60,
+    locale: "es",
+    disable: [
+      function (date) {
+        return date.getDay() === 0 || date.getDay() === 6;
+      },
+      "2025-12-25",
+      "2025-01-01",
+    ],
+    minDate: "today",
+    maxDate: new Date().fp_incr(7),
+  };
 
   return (
     <div>
@@ -15,13 +30,20 @@ export const FormDate = ({ label, name, register, rules, error }) => {
       >
         {label}
       </label>
-      <input
-        id={name}
-        type="date"
-        min={formatDate(today)}
-        max={formatDate(oneWeekLater)}
-        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-        {...register(name, rules)}
+      <Controller
+        name={name}
+        control={control}
+        rules={rules}
+        render={({ field }) => {
+          console.log("🔍 Field object:", field);
+          return (
+            <Flatpickr
+              value={field.value ? new Date(field.value) : null}
+              options={opciones}
+              onChange={([selected]) => field.onChange(selected)}
+            />
+          );
+        }}
       />
       {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
     </div>
@@ -31,8 +53,7 @@ export const FormDate = ({ label, name, register, rules, error }) => {
 FormDate.propTypes = {
   label: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  placeholder: PropTypes.string.isRequired,
-  register: PropTypes.func.isRequired,
+  control: PropTypes.object.isRequired,
   rules: PropTypes.object,
   error: PropTypes.object,
   classNameExtra: PropTypes.string,

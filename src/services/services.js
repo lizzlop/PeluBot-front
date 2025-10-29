@@ -21,6 +21,20 @@ export const GET_APPOINTMENTS = gql`
   }
 `;
 
+export const GET_BUSINESS_HOURS = gql`
+  query getBusinessHours {
+    getBusinessHours {
+      monday
+      tuesday
+      wednesday
+      thursday
+      friday
+      saturday
+      sunday
+    }
+  }
+`;
+
 export const CREATE_APPOINTMENT = gql`
   mutation CreateAppointment(
     $name: String!
