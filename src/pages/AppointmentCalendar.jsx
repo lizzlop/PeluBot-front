@@ -1,19 +1,27 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client/react";
-
-//Full calendar
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
-import { bussinessHours } from "../utils/utils";
+
+//TODO: Reemplazar este businessHours por el de BD
+import { businessHours } from "../utils/utils";
 import { parseAppointment } from "../utils/parseAppointment";
 import Loader from "../components/Loader";
-import { GET_APPOINTMENTS } from "../services/services";
+import { Popup } from "../components/Popup";
+import { GET_APPOINTMENTS, GET_BARBERS } from "../services/services";
 
 export const AppointmentCalendar = () => {
   const [events, setEvents] = useState([{}]);
-  const barbers = ["Todos", "Santiago", "Luca", "Daniel"];
+  const [barbers, setBarbers] = useState([]);
+  const [responsePopup, setResponsePopup] = useState(false);
+
+  const {
+    data: getBarbersData,
+    error: getBarbersError,
+    loading: getBarbersLoading,
+  } = useQuery(GET_BARBERS);
 
   const {
     data: getAppData,
@@ -22,28 +30,40 @@ export const AppointmentCalendar = () => {
   } = useQuery(GET_APPOINTMENTS);
 
   const handleClickBarber = (barber) => {
-    console.log("🎉 barber", barber);
-    const appontments = parseAppointment(getAppData.getAppointments);
+    const appointments = parseAppointment(getAppData.getAppointments);
     let appointmentsByBarber;
     if (barber == "Todos") {
-      appointmentsByBarber = appontments;
+      appointmentsByBarber = appointments;
     } else {
-      appointmentsByBarber = appontments.filter((app) => app.barber == barber);
+      appointmentsByBarber = appointments.filter((app) => app.barber == barber);
     }
-    console.log("🎉 appointmentsByBarber", appointmentsByBarber);
     setEvents(appointmentsByBarber);
   };
 
   useEffect(() => {
     if (getAppData?.getAppointments) {
       const newEvents = parseAppointment(getAppData.getAppointments);
-      console.log("🎉 newEvents", newEvents);
       setEvents(newEvents);
     }
-  }, [getAppData]);
+  }, [getAppData, getAppLoading]);
+
+  useEffect(() => {
+    if (getBarbersData)
+      setBarbers(getBarbersData.getBarbers.map((barber) => barber.name));
+  }, [getBarbersData, getBarbersLoading]);
+
+  useEffect(() => {
+    if (getBarbersError || getAppError) {
+      setResponsePopup({
+        success: false,
+        message: `Error en el servicio ${
+          getBarbersError ? "GET_BARBERS" : "GET_APPOINTMENTS"
+        }: ${getAppError?.message || getBarbersError?.message}`,
+      });
+    }
+  }, [getAppError, getBarbersError]);
 
   if (getAppLoading) return <Loader />;
-  if (getAppError) return <p>Error: {getAppError.message}</p>;
 
   return (
     <div className="p-4">
@@ -79,7 +99,7 @@ export const AppointmentCalendar = () => {
           minute: "2-digit",
           hour12: true,
         }}
-        businessHours={bussinessHours}
+        businessHours={businessHours}
         allDaySlot={false}
         height="auto"
         dayCellDidMount={(arg) => {
@@ -87,6 +107,10 @@ export const AppointmentCalendar = () => {
             arg.el.style.backgroundColor = "#FFFBEB";
           }
         }}
+      />
+      <Popup
+        responsePopup={responsePopup}
+        onClose={() => setResponsePopup(false)}
       />
     </div>
   );

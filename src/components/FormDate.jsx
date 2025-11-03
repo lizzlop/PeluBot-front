@@ -1,23 +1,30 @@
 import PropTypes from "prop-types";
 import { Controller } from "react-hook-form";
 import Flatpickr from "react-flatpickr";
-import "flatpickr/dist/themes/airbnb.css"; // Temas disponibles: dark, material_blue, etc.
+import "flatpickr/dist/themes/dark.css";
 
-export const FormDate = ({ label, name, control, rules, error }) => {
+import { parseDisabledDays, parseHoursSelect } from "../utils/parseAppointment";
+
+export const FormDate = ({
+  label,
+  name,
+  setTimeSelect,
+  businessHours,
+  control,
+  rules,
+  error,
+}) => {
+  const disabledDays = businessHours ? parseDisabledDays(businessHours) : [];
   const opciones = {
-    altInput: false,
-    enableTime: false,
     noCalendar: false,
     dateFormat: "Y-m-d",
-    minuteIncrement: 60,
-    enable: ["2025-11-03"],
-    // disable: [
-    //   function (date) {
-    //     return date.getDay() === 0 || date.getDay() === 6;
-    //   },
-    //   "2025-12-25",
-    //   "2025-01-01",
-    // ],
+    disable: [
+      function (date) {
+        return disabledDays
+          ? disabledDays.includes(date.getDay().toString())
+          : false;
+      },
+    ],
     minDate: "today",
     maxDate: new Date().fp_incr(7),
   };
@@ -35,12 +42,17 @@ export const FormDate = ({ label, name, control, rules, error }) => {
         control={control}
         rules={rules}
         render={({ field }) => {
-          console.log("🔍 Field object:", field);
           return (
             <Flatpickr
               value={field.value ? new Date(field.value) : null}
               options={opciones}
-              onChange={([selected]) => field.onChange(selected)}
+              onChange={([selected]) => {
+                field.onChange(selected);
+                const daySelected = businessHours.find(
+                  (day) => day.id == selected.getDay()
+                );
+                setTimeSelect(parseHoursSelect(daySelected.hours));
+              }}
             />
           );
         }}
@@ -53,8 +65,9 @@ export const FormDate = ({ label, name, control, rules, error }) => {
 FormDate.propTypes = {
   label: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  businessHours: PropTypes.array,
+  setTimeSelect: PropTypes.func.isRequired,
   control: PropTypes.object.isRequired,
   rules: PropTypes.object,
   error: PropTypes.object,
-  classNameExtra: PropTypes.string,
 };

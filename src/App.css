@@ -46,3 +46,23 @@
   border-color: #1e1a4d !important;
   color: white !important;
 }
+
+.flatpickr-input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 8px 12px;
+  outline: none;
+  font-size: 16px;
+  height: 42px;
+  background-color: white;
+  text-align: center;
+}
+
+.flatpickr-input:focus {
+  box-shadow: 0 0 0 2px #111827; /* focus:ring-2 focus:ring-gray-900 */
+}
+
+.flatpickr-input.error {
+  border-color: #ef4444;
+}

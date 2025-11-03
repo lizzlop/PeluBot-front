@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 import { RUN_AGENT } from "../services/services";
 import barber from "../assets/barber.png";
-import { useNavigate } from "react-router-dom";
 
 export const AppointmentChat = () => {
   const getLocalTime = () => {
@@ -13,7 +13,6 @@ export const AppointmentChat = () => {
       timeStyle: "short",
     });
   };
-  console.log("🎉 localTime", getLocalTime());
 
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
@@ -21,7 +20,7 @@ export const AppointmentChat = () => {
     {
       id: 1,
       sender: "system",
-      text: "Hola. ¿En qué puedo ayudarte hoy?\nPuedo crear, reprogramar o cancelar citas",
+      text: "Hola. ¿En qué puedo ayudarte hoy?\nPuedo crear, re-programar o cancelar citas",
       time: getLocalTime(),
     },
   ]);
@@ -33,7 +32,6 @@ export const AppointmentChat = () => {
   const { register, handleSubmit, reset } = useForm();
 
   const handleSend = async (data) => {
-    console.log("🎉 input", data.message);
     if (data.message == "") return;
     const newMessage = {
       id: new Date(),
@@ -41,28 +39,22 @@ export const AppointmentChat = () => {
       text: data.message,
       time: getLocalTime(),
     };
-    console.log("🎉 newMessage", newMessage);
-    console.log("🎉 newMessage.text", newMessage.text);
     setMessages((prev) => [...prev, newMessage]);
     reset();
-    console.log("🎉 messages", messages);
     try {
       const result = await runAgent({
         variables: { newMessage: newMessage.text },
       });
-      console.log("result", result);
       const parseResult = JSON.parse(result.data.runAgent);
-      console.log("🎉 parseResult", parseResult);
       const responseMessage = {
         id: new Date() + 1,
         sender: "system",
         text: parseResult.message,
         time: getLocalTime(),
       };
-      console.log("🎉 responseMessage", responseMessage);
       setMessages((prev) => [...prev, responseMessage]);
     } catch (error) {
-      console.log(`❌ Error runing agent: ${error}`);
+      console.error(`❌ Error running agent: ${error}`);
       const errorMessage = {
         id: new Date() + 1,
         sender: "system",

@@ -1,14 +1,13 @@
 import PropTypes from "prop-types";
 
 export const Popup = ({ responsePopup, reset, onClose }) => {
-  console.log("🎉 responsePopup", responsePopup);
   if (!responsePopup) return null;
 
   if (responsePopup.success) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+      <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-[9999]">
         <div className="bg-white rounded-xl w-80 shadow-xl overflow-hidden">
-          {/* Header rojo con ícono */}
+          {/* Header */}
           <div className="bg-green-400 flex flex-col items-center justify-center py-6">
             <div className="text-white text-5xl">✅️</div>
           </div>
@@ -24,7 +23,7 @@ export const Popup = ({ responsePopup, reset, onClose }) => {
             <button
               onClick={() => {
                 onClose();
-                reset();
+                if (reset) reset();
               }}
               className="mt-5 bg-indigo-950 text-white px-6 py-2 rounded-full font-semibold hover:bg-indigo-900 transition"
             >
@@ -36,9 +35,9 @@ export const Popup = ({ responsePopup, reset, onClose }) => {
     );
   } else {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+      <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-[9999]">
         <div className="bg-white rounded-xl w-80 shadow-xl overflow-hidden">
-          {/* Header rojo con ícono */}
+          {/* Header */}
           <div className="bg-red-500 flex flex-col items-center justify-center py-6">
             <div className="text-white text-5xl">⚠️</div>
           </div>
@@ -64,5 +63,6 @@ export const Popup = ({ responsePopup, reset, onClose }) => {
 
 Popup.propTypes = {
   responsePopup: PropTypes.object,
+  reset: PropTypes.func,
   onClose: PropTypes.func.isRequired,
 };

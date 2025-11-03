@@ -24,13 +24,9 @@ export const GET_APPOINTMENTS = gql`
 export const GET_BUSINESS_HOURS = gql`
   query getBusinessHours {
     getBusinessHours {
-      monday
-      tuesday
-      wednesday
-      thursday
-      friday
-      saturday
-      sunday
+      id
+      day
+      hours
     }
   }
 `;

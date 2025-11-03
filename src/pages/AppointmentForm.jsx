@@ -14,20 +14,24 @@ import {
 } from "../services/services";
 import { Popup } from "../components/Popup";
 import Loader from "../components/Loader";
+import { parseDateToSend } from "../utils/parseAppointment";
 
 export const AppointmentForm = () => {
-  //TODO: Implementar popup cuando sale error en los servicios
-  console.log("🎉 antes de llamar");
-  const { data: getBarbersData, loading: getBarbersLoading } =
-    useQuery(GET_BARBERS);
-  const { data: getBHData, loading: getBHLoading } =
-    useQuery(GET_BUSINESS_HOURS);
+  const {
+    data: getBarbersData,
+    error: getBarbersError,
+    loading: getBarbersLoading,
+  } = useQuery(GET_BARBERS);
+  const {
+    data: getBHData,
+    error: getBHError,
+    loading: getBHLoading,
+  } = useQuery(GET_BUSINESS_HOURS);
 
-  //TODO: Implementar lo de traer las bussiness hours y activar la hora
   const [createAppointment] = useMutation(CREATE_APPOINTMENT);
 
   const [responsePopup, setResponsePopup] = useState(false);
-  const [dateSelected, setDateSelected] = useState();
+  const [businessHours, setBusinessHours] = useState();
   const [barberSelect, setBarberSelect] = useState([]);
   const [timeSelect, setTimeSelect] = useState([]);
   const {
@@ -45,36 +49,31 @@ export const AppointmentForm = () => {
 
   useEffect(() => {
     if (getBHData) {
-      // Aquí podrías mapear los horarios disponibles según la fecha seleccionada
-      // y setear opciones en el select de horario si fuese necesario.
+      setBusinessHours(getBHData.getBusinessHours);
     }
-  }, [getBHData]);
+  }, [getBHData, getBHLoading]);
+
+  useEffect(() => {
+    if (getBarbersError || getBHError) {
+      setResponsePopup({
+        success: false,
+        message: `Error en el servicio ${
+          getBarbersError ? "GET_BARBERS" : "GET_BUSINESS_HOURS"
+        }: ${getBarbersError?.message || getBHError?.message}`,
+      });
+    }
+  }, [getBHError, getBarbersError]);
 
   const onSubmit = async (newAppointment) => {
-    const dateToSend = new Date(newAppointment.date)
-      .toLocaleString("en-CA", {
-        timeZone: "America/Bogota", // Ajusta a tu timezone
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false,
-      })
-      .replace(", ", "T");
-
-    console.log("newAppointment", newAppointment);
     const { data } = await createAppointment({
       variables: {
         name: newAppointment.name,
         barber: newAppointment.barber,
-        date: dateToSend,
+        date: parseDateToSend(newAppointment.date, newAppointment.time),
         phone: newAppointment.phone,
         message: newAppointment.message,
       },
     });
-    console.log("🎉 data", data);
     setResponsePopup(data.createAppointment);
   };
 
@@ -111,6 +110,8 @@ export const AppointmentForm = () => {
           <FormDate
             label="Fecha de la cita"
             name="date"
+            businessHours={businessHours}
+            setTimeSelect={setTimeSelect}
             control={control}
             rules={rules.date}
             error={errors.date}
@@ -120,7 +121,7 @@ export const AppointmentForm = () => {
           <FormSelect
             label="Selecciona el horario de tu cita"
             name="time"
-            options={[]}
+            options={timeSelect}
             register={register}
             rules={rules.time}
             error={errors.time}

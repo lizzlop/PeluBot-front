@@ -52,7 +52,7 @@ export const rules = {
   },
 };
 
-export const bussinessHours = [
+export const businessHours = [
   {
     daysOfWeek: [1, 2, 3, 4, 5, 6],
     startTime: "09:00",

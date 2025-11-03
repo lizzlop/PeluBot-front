@@ -9,24 +9,6 @@ export const FormSelect = ({
   error,
 }) => {
   const disableSelect = !options || options.length === 0;
-  console.log("🎉 options", options);
-  //TODO: make this dynamic and whit am and pm
-  // const options =
-  //   name == "barber"
-  //     ? ["Santiago", "Daniel", "Luca"]
-  //     : [
-  //         "09:00",
-  //         "10:00",
-  //         "11:00",
-  //         "12:00",
-  //         "14:00",
-  //         "15:00",
-  //         "16:00",
-  //         "17:00",
-  //         "18:00",
-  //         "19:00",
-  //       ];
-
   return (
     <div>
       <label
