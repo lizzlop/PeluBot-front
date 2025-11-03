@@ -117,14 +117,14 @@ export const AppointmentForm = () => {
           />
 
           {/* Time */}
-          {/* <FormSelect
+          <FormSelect
             label="Selecciona el horario de tu cita"
             name="time"
             options={[]}
             register={register}
             rules={rules.time}
             error={errors.time}
-          /> */}
+          />
 
           {/* Barber */}
           <FormSelect

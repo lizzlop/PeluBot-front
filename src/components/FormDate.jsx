@@ -6,18 +6,18 @@ import "flatpickr/dist/themes/airbnb.css"; // Temas disponibles: dark, material_
 export const FormDate = ({ label, name, control, rules, error }) => {
   const opciones = {
     altInput: false,
-    enableTime: true,
+    enableTime: false,
     noCalendar: false,
-    dateFormat: "Y-m-d h:i K",
+    dateFormat: "Y-m-d",
     minuteIncrement: 60,
-    locale: "es",
-    disable: [
-      function (date) {
-        return date.getDay() === 0 || date.getDay() === 6;
-      },
-      "2025-12-25",
-      "2025-01-01",
-    ],
+    enable: ["2025-11-03"],
+    // disable: [
+    //   function (date) {
+    //     return date.getDay() === 0 || date.getDay() === 6;
+    //   },
+    //   "2025-12-25",
+    //   "2025-01-01",
+    // ],
     minDate: "today",
     maxDate: new Date().fp_incr(7),
   };
