@@ -92,7 +92,7 @@ export const AppointmentChat = () => {
               }`}
             >
               <div
-                className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
+                className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl text-left ${
                   message.sender === "user"
                     ? "bg-indigo-950 text-white rounded-br-none"
                     : "bg-gray-200 text-gray-800 rounded-bl-none"

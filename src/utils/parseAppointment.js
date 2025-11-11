@@ -19,7 +19,7 @@ export const parseAppointment = (data) => {
     barber: appointment.barber,
     start: appointment.date,
     end: endDate(appointment.date),
-    color: "#845442", //TODO: Cambiar cuando ya este la BD
+    color: appointment.barberDetails.color,
   }));
 };
 

@@ -5,8 +5,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
 
-//TODO: Reemplazar este businessHours por el de BD
-import { businessHours } from "../utils/utils";
 import { parseAppointment } from "../utils/parseAppointment";
 import Loader from "../components/Loader";
 import { Popup } from "../components/Popup";
@@ -99,7 +97,6 @@ export const AppointmentCalendar = () => {
           minute: "2-digit",
           hour12: true,
         }}
-        businessHours={businessHours}
         allDaySlot={false}
         height="auto"
         dayCellDidMount={(arg) => {

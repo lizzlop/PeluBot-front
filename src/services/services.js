@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 export const GET_BARBERS = gql`
   query GetBarbers {
     getBarbers {
-      id
+      _id
       name
       color
     }
@@ -13,10 +13,17 @@ export const GET_BARBERS = gql`
 export const GET_APPOINTMENTS = gql`
   query GetAppointments {
     getAppointments {
-      id
+      _id
       name
-      date
       barber
+      date
+      phone
+      message
+      barberDetails {
+        _id
+        name
+        color
+      }
     }
   }
 `;
@@ -24,7 +31,7 @@ export const GET_APPOINTMENTS = gql`
 export const GET_BUSINESS_HOURS = gql`
   query getBusinessHours {
     getBusinessHours {
-      id
+      _id
       day
       hours
     }
