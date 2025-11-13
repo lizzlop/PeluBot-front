@@ -3,7 +3,7 @@ import { useMutation } from "@apollo/client/react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-import { RUN_AGENT } from "../services/services";
+import { RUN_AGENT } from "../graphql";
 import barber from "../assets/barber.png";
 
 export const AppointmentChat = () => {

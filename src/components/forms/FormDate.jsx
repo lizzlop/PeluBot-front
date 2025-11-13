@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
 import { Controller } from "react-hook-form";
 import Flatpickr from "react-flatpickr";
+import { Spanish } from "flatpickr/dist/l10n/es.js";
 import "flatpickr/dist/themes/dark.css";
 
-import { parseDisabledDays, parseHoursSelect } from "../utils/parseAppointment";
+import { parseDisabledDays, parseHoursSelect, maxDaysAhead } from "../../utils";
 
 export const FormDate = ({
   label,
@@ -16,7 +17,7 @@ export const FormDate = ({
 }) => {
   const disabledDays = businessHours ? parseDisabledDays(businessHours) : [];
   const opciones = {
-    noCalendar: false,
+    locale: Spanish,
     dateFormat: "Y-m-d",
     disable: [
       function (date) {
@@ -26,7 +27,7 @@ export const FormDate = ({
       },
     ],
     minDate: "today",
-    maxDate: new Date().fp_incr(7),
+    maxDate: new Date().fp_incr(maxDaysAhead),
   };
 
   return (
@@ -47,9 +48,10 @@ export const FormDate = ({
               value={field.value ? new Date(field.value) : null}
               options={opciones}
               onChange={([selected]) => {
+                console.log("🎉 businessHours", businessHours);
                 field.onChange(selected);
                 const daySelected = businessHours.find(
-                  (day) => day.id == selected.getDay()
+                  (day) => day._id == selected.getDay()
                 );
                 setTimeSelect(parseHoursSelect(daySelected.hours));
               }}

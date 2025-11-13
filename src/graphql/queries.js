@@ -37,30 +37,3 @@ export const GET_BUSINESS_HOURS = gql`
     }
   }
 `;
-
-export const CREATE_APPOINTMENT = gql`
-  mutation CreateAppointment(
-    $name: String!
-    $barber: String!
-    $date: String!
-    $phone: String!
-    $message: String
-  ) {
-    createAppointment(
-      name: $name
-      barber: $barber
-      date: $date
-      phone: $phone
-      message: $message
-    ) {
-      success
-      message
-    }
-  }
-`;
-
-export const RUN_AGENT = gql`
-  mutation runAgent($newMessage: String!) {
-    runAgent(newMessage: $newMessage)
-  }
-`;

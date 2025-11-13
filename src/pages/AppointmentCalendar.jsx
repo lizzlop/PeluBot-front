@@ -5,10 +5,10 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
 
-import { parseAppointment } from "../utils/parseAppointment";
+import { parseAppointment } from "../utils";
 import Loader from "../components/Loader";
 import { Popup } from "../components/Popup";
-import { GET_APPOINTMENTS, GET_BARBERS } from "../services/services";
+import { GET_APPOINTMENTS, GET_BARBERS } from "../graphql";
 
 export const AppointmentCalendar = () => {
   const [events, setEvents] = useState([{}]);

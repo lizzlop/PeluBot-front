@@ -2,19 +2,20 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { useEffect, useState } from "react";
 
-import { rules } from "../utils/utils";
-import { FormInput } from "../components/FormInput";
-import { FormTextArea } from "../components/FormTextArea";
-import { FormDate } from "../components/FormDate";
-import { FormSelect } from "../components/FormSelect";
+import { rules, parseDateToSend } from "../utils";
+import {
+  FormInput,
+  FormTextArea,
+  FormDate,
+  FormSelect,
+} from "../components/forms";
 import {
   CREATE_APPOINTMENT,
   GET_BARBERS,
   GET_BUSINESS_HOURS,
-} from "../services/services";
+} from "../graphql";
 import { Popup } from "../components/Popup";
 import Loader from "../components/Loader";
-import { parseDateToSend } from "../utils/parseAppointment";
 
 export const AppointmentForm = () => {
   const {
@@ -49,6 +50,7 @@ export const AppointmentForm = () => {
 
   useEffect(() => {
     if (getBHData) {
+      console.log("🎉 getBHData", getBHData);
       setBusinessHours(getBHData.getBusinessHours);
     }
   }, [getBHData, getBHLoading]);
@@ -67,11 +69,13 @@ export const AppointmentForm = () => {
   const onSubmit = async (newAppointment) => {
     const { data } = await createAppointment({
       variables: {
-        name: newAppointment.name,
-        barber: newAppointment.barber,
-        date: parseDateToSend(newAppointment.date, newAppointment.time),
-        phone: newAppointment.phone,
-        message: newAppointment.message,
+        input: {
+          name: newAppointment.name,
+          barber: newAppointment.barber,
+          date: parseDateToSend(newAppointment.date, newAppointment.time),
+          phone: newAppointment.phone,
+          message: newAppointment.message,
+        },
       },
     });
     setResponsePopup(data.createAppointment);

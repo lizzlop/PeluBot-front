@@ -1,38 +1,57 @@
 /**
- * Time format for Full Calendar: YYYY-MM-DDTHH:mm:ss
- * 
+ * Utility functions for parsing appointment data
+ *
+ * Full Calendar event format:
  * {
-    title: "Appointment"
-    start: YYYY-MM-DDTHH:mm:ss
-    end: YYYY-MM-DDTHH:mm:ss
-    }
+ *   title: string,
+ *   start: ISO string (YYYY-MM-DDTHH:mm:ss),
+ *   end: ISO string (YYYY-MM-DDTHH:mm:ss),
+ *   color: string,
+ *   extendedProps: { barber: string }
+ * }
  */
 
+const APPOINTMENT_DURATION_HOURS = 1;
+const TIME_ZONE = "America/Bogota";
+
+/**
+ * Calculate end date based on start date and duration
+ */
 const endDate = (startDate) => {
   const date = new Date(startDate);
-  return date.setHours(date.getHours() + 1);
+  return date.setHours(date.getHours() + APPOINTMENT_DURATION_HOURS);
 };
 
+/**
+ * Parse appointments data for Full Calendar
+ */
 export const parseAppointment = (data) => {
   return data.map((appointment) => ({
+    id: appointment._id,
     title: appointment.name,
     barber: appointment.barber,
     start: appointment.date,
     end: endDate(appointment.date),
-    color: appointment.barberDetails.color,
+    color: appointment.barberDetails.color || "#3788d8",
   }));
 };
 
+/**
+ * Parse business hours to get disabled days
+ */
 export const parseDisabledDays = (businessHours) => {
   const disabledDays = [];
   for (const day of businessHours) {
     if (!day.hours || day.hours.length === 0) {
-      disabledDays.push(day.id);
+      disabledDays.push(day._id);
     }
   }
   return disabledDays;
 };
 
+/**
+ * Parse hours array for select inputs
+ */
 export const parseHoursSelect = (hoursArray) => {
   if (!Array.isArray(hoursArray) || hoursArray.length === 0) {
     return [];
@@ -51,6 +70,9 @@ export const parseHoursSelect = (hoursArray) => {
   });
 };
 
+/**
+ * Convert 12h time to 24h format for API
+ */
 const parseHoursToSend = (time) => {
   const [timePart, period] = time.split(" ");
   const [hour, minutes] = timePart.split(":");
@@ -63,9 +85,12 @@ const parseHoursToSend = (time) => {
   return `${hour24.toString().padStart(2, "0")}:${minutes}:00`;
 };
 
+/**
+ * Parse date and time for API submission
+ */
 export const parseDateToSend = (date, hour) => {
   const formatDate = new Date(date).toLocaleString("en-CA", {
-    timeZone: "America/Bogota",
+    timeZone: TIME_ZONE,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",

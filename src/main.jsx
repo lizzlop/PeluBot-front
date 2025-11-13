@@ -4,15 +4,20 @@ import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client/react";
 
 import App from "./App.jsx";
+import { config } from "./config/apollo.js";
 
 const client = new ApolloClient({
   link: new HttpLink({
-    uri: "http://localhost:4000/graphql",
+    uri: config.uri,
+    headers: config.headers,
   }),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache(config.cacheConfig),
+  defaultOptions: config.defaultOptions,
 });
 
-createRoot(document.getElementById("root")).render(
+const root = createRoot(document.getElementById("root"));
+
+root.render(
   <StrictMode>
     <ApolloProvider client={client}>
       <App />
