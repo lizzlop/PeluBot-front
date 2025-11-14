@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { rules, parseDateToSend } from "../utils";
 import {
@@ -18,23 +18,35 @@ import { Popup } from "../components/Popup";
 import Loader from "../components/Loader";
 
 export const AppointmentForm = () => {
+  const [responsePopup, setResponsePopup] = useState(false);
+  const [timeSelect, setTimeSelect] = useState([]);
+
   const {
-    data: getBarbersData,
-    error: getBarbersError,
-    loading: getBarbersLoading,
+    data: barbersData,
+    error: barbersError,
+    loading: barbersLoading,
   } = useQuery(GET_BARBERS);
+
   const {
-    data: getBHData,
-    error: getBHError,
-    loading: getBHLoading,
+    data: businessHoursData,
+    error: businessHoursError,
+    loading: businessHoursLoading,
   } = useQuery(GET_BUSINESS_HOURS);
 
-  const [createAppointment] = useMutation(CREATE_APPOINTMENT);
+  const [createAppointment, { loading: createLoading }] =
+    useMutation(CREATE_APPOINTMENT);
 
-  const [responsePopup, setResponsePopup] = useState(false);
-  const [businessHours, setBusinessHours] = useState();
-  const [barberSelect, setBarberSelect] = useState([]);
-  const [timeSelect, setTimeSelect] = useState([]);
+  useEffect(() => {
+    if (barbersError || businessHoursError) {
+      setResponsePopup({
+        success: false,
+        message: `Error en el servicio ${
+          barbersError ? "GET_BARBERS" : "GET_BUSINESS_HOURS"
+        }: ${barbersError?.message || businessHoursError?.message}`,
+      });
+    }
+  }, [barbersError, businessHoursError]);
+
   const {
     register,
     handleSubmit,
@@ -43,28 +55,15 @@ export const AppointmentForm = () => {
     formState: { errors },
   } = useForm();
 
-  useEffect(() => {
-    if (getBarbersData)
-      setBarberSelect(getBarbersData.getBarbers.map((barber) => barber.name));
-  }, [getBarbersData, getBarbersLoading]);
+  const barberOptions = useMemo(
+    () => barbersData?.getBarbers?.map((barber) => barber.name) || [],
+    [barbersData]
+  );
 
-  useEffect(() => {
-    if (getBHData) {
-      console.log("🎉 getBHData", getBHData);
-      setBusinessHours(getBHData.getBusinessHours);
-    }
-  }, [getBHData, getBHLoading]);
-
-  useEffect(() => {
-    if (getBarbersError || getBHError) {
-      setResponsePopup({
-        success: false,
-        message: `Error en el servicio ${
-          getBarbersError ? "GET_BARBERS" : "GET_BUSINESS_HOURS"
-        }: ${getBarbersError?.message || getBHError?.message}`,
-      });
-    }
-  }, [getBHError, getBarbersError]);
+  const businessHours = useMemo(
+    () => businessHoursData?.getBusinessHours || null,
+    [businessHoursData]
+  );
 
   const onSubmit = async (newAppointment) => {
     const { data } = await createAppointment({
@@ -81,7 +80,8 @@ export const AppointmentForm = () => {
     setResponsePopup(data.createAppointment);
   };
 
-  if (getBarbersLoading || getBHLoading) return <Loader />;
+  if (barbersLoading || businessHoursLoading || createLoading)
+    return <Loader />;
 
   return (
     <div className="bg-white flex items-center justify-center mt-20 p-5">
@@ -135,7 +135,7 @@ export const AppointmentForm = () => {
           <FormSelect
             label="Selecciona un barbero"
             name="barber"
-            options={barberSelect}
+            options={barberOptions}
             register={register}
             rules={rules.barber}
             error={errors.barber}
