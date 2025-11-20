@@ -46,8 +46,17 @@ export const AppointmentCalendar = () => {
   }, [getAppData, getAppLoading]);
 
   useEffect(() => {
-    if (getBarbersData)
-      setBarbers(getBarbersData.getBarbers.map((barber) => barber.name));
+    if (getBarbersData) {
+      setBarbers([
+        ...getBarbersData.getBarbers,
+        {
+          color: "#1E1A4D",
+          name: "Todos",
+          _id: 100,
+        },
+      ]);
+    }
+    console.log("🎉 getBarbersData", getBarbersData);
   }, [getBarbersData, getBarbersLoading]);
 
   useEffect(() => {
@@ -69,12 +78,13 @@ export const AppointmentCalendar = () => {
         <span className="px-4 py-2">Filtra citas por barbero: </span>
         {barbers.map((barber) => (
           <button
-            className="px-4 py-2 ml-5 rounded-sm cursor-pointer transition-colors duration-200 bg-indigo-950 text-gray-100"
-            key={barber}
-            value={barber}
-            onClick={() => handleClickBarber(barber)}
+            className="px-4 py-2 ml-5 rounded-sm cursor-pointer text-gray-100"
+            style={{ backgroundColor: barber.color }}
+            key={barber._id}
+            value={barber.name}
+            onClick={() => handleClickBarber(barber.name)}
           >
-            {barber}
+            {barber.name}
           </button>
         ))}
       </div>
