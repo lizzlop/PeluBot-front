@@ -1,32 +1,21 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useMutation } from "@apollo/client/react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 import { RUN_AGENT } from "../graphql";
 import barber from "../assets/barber.png";
+import { getLocalTime } from "../utils/parseAppointment";
+import { useApp } from "../context/AppContext";
 
 export const AppointmentChat = () => {
-  const getLocalTime = () => {
-    return new Date().toLocaleTimeString("es-CO", {
-      hour12: true,
-      timeStyle: "short",
-    });
-  };
-
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: "system",
-      text: "Hola. ¿En qué puedo ayudarte hoy?\nPuedo crear, re-programar o cancelar citas",
-      time: getLocalTime(),
-    },
-  ]);
+  const { store, dispatch } = useApp();
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [store.messages]);
   const [runAgent] = useMutation(RUN_AGENT);
 
   const { register, handleSubmit, reset } = useForm();
@@ -39,7 +28,10 @@ export const AppointmentChat = () => {
       text: data.message,
       time: getLocalTime(),
     };
-    setMessages((prev) => [...prev, newMessage]);
+    dispatch({
+      type: "ADD_CHAT_MESSAGE",
+      payload: newMessage,
+    });
     reset();
     try {
       const result = await runAgent({
@@ -52,7 +44,10 @@ export const AppointmentChat = () => {
         text: parseResult.message,
         time: getLocalTime(),
       };
-      setMessages((prev) => [...prev, responseMessage]);
+      dispatch({
+        type: "ADD_CHAT_MESSAGE",
+        payload: responseMessage,
+      });
     } catch (error) {
       console.error(`❌ Error running agent: ${error}`);
       const errorMessage = {
@@ -62,10 +57,12 @@ export const AppointmentChat = () => {
         time: getLocalTime(),
         button: true,
       };
-      setMessages((prev) => [...prev, errorMessage]);
+      dispatch({
+        type: "ADD_CHAT_MESSAGE",
+        payload: errorMessage,
+      });
     }
   };
-
   return (
     <div className="bg-white flex items-center justify-center mt-20 p-5">
       <div className="bg-white rounded-2xl shadow-lg w-full max-w-md">
@@ -84,7 +81,7 @@ export const AppointmentChat = () => {
 
         {/* Chat Messages */}
         <div className="p-4 space-y-4 max-h-96 overflow-y-auto">
-          {messages.map((message) => (
+          {store.messages.map((message) => (
             <div
               key={message.id}
               className={`flex whitespace-pre-line ${

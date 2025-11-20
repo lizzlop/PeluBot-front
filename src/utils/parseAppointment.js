@@ -98,3 +98,13 @@ export const parseDateToSend = (date, hour) => {
   const formatTime = parseHoursToSend(hour);
   return `${formatDate}T${formatTime}`;
 };
+
+/**
+ * Get local time
+ */
+export const getLocalTime = () => {
+  return new Date().toLocaleTimeString("es-CO", {
+    hour12: true,
+    timeStyle: "short",
+  });
+};
