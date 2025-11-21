@@ -9,11 +9,13 @@ import { parseAppointment } from "../utils";
 import Loader from "../components/Loader";
 import { Popup } from "../components/Popup";
 import { GET_APPOINTMENTS, GET_BARBERS } from "../graphql";
+import { PopupDate } from "../components/calendar/PopupDate";
 
 export const AppointmentCalendar = () => {
   const [events, setEvents] = useState([{}]);
   const [barbers, setBarbers] = useState([]);
   const [responsePopup, setResponsePopup] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const {
     data: getBarbersData,
@@ -38,6 +40,12 @@ export const AppointmentCalendar = () => {
     setEvents(appointmentsByBarber);
   };
 
+  const handleEventClick = (clickInfo) => {
+    console.log("🎉 clickInfo", clickInfo);
+    setSelectedEvent(clickInfo.event);
+    setIsModalOpen(true);
+  };
+
   useEffect(() => {
     if (getAppData?.getAppointments) {
       const newEvents = parseAppointment(getAppData.getAppointments);
@@ -56,7 +64,6 @@ export const AppointmentCalendar = () => {
         },
       ]);
     }
-    console.log("🎉 getBarbersData", getBarbersData);
   }, [getBarbersData, getBarbersLoading]);
 
   useEffect(() => {
@@ -114,7 +121,14 @@ export const AppointmentCalendar = () => {
             arg.el.style.backgroundColor = "#FFFBEB";
           }
         }}
+        eventClick={handleEventClick}
       />
+      {selectedEvent && (
+        <PopupDate
+          selectedEvent={selectedEvent}
+          closeModal={() => setSelectedEvent(null)}
+        />
+      )}
       <Popup
         responsePopup={responsePopup}
         onClose={() => setResponsePopup(false)}

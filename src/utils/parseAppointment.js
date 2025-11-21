@@ -3,11 +3,12 @@
  *
  * Full Calendar event format:
  * {
- *   title: string,
+ *   id: ID,
+ *   title: String,
  *   start: ISO string (YYYY-MM-DDTHH:mm:ss),
  *   end: ISO string (YYYY-MM-DDTHH:mm:ss),
- *   color: string,
- *   extendedProps: { barber: string }
+ *   color: String
+ *   extendedProps: { ... }
  * }
  */
 
@@ -29,10 +30,15 @@ export const parseAppointment = (data) => {
   return data.map((appointment) => ({
     id: appointment._id,
     title: appointment.name,
-    barber: appointment.barber,
     start: appointment.date,
     end: endDate(appointment.date),
     color: appointment.barberDetails.color || "#3788d8",
+    extendedProps: {
+      barber: appointment.barber,
+      phone: appointment.phone,
+      message: appointment.message,
+      color: appointment.barberDetails.color || "#3788d8",
+    },
   }));
 };
 
