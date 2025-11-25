@@ -13,21 +13,17 @@ export const Header = () => {
           <nav className="flex space-x-2">
             <button
               onClick={() => navigate("/")}
-              className={`px-4 py-2 rounded-sm cursor-pointer transition-colors duration-200 ${
-                location.pathname === "/"
-                  ? "bg-gray-100 text-indigo-950"
-                  : "bg-indigo-950 text-gray-100 hover:bg-indigo-900"
-              }`}
+              className={
+                "px-4 py-2 rounded-sm cursor-pointer transition-colors duration-200 bg-indigo-950 text-gray-100 hover:bg-indigo-900"
+              }
             >
               💬 Chat
             </button>
             <button
               onClick={() => navigate("/calendar")}
-              className={`px-4 py-2 rounded-sm cursor-pointer transition-colors duration-200 ${
-                location.pathname === "/calendar"
-                  ? "bg-gray-100 text-indigo-950"
-                  : "bg-indigo-950 text-gray-100 hover:bg-indigo-900"
-              }`}
+              className={
+                "px-4 py-2 rounded-sm cursor-pointer transition-colors duration-200 bg-indigo-950 text-gray-100 hover:bg-indigo-900"
+              }
             >
               📅 Calendario
             </button>

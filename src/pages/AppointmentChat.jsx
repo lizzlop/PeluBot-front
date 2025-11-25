@@ -64,7 +64,7 @@ export const AppointmentChat = () => {
     }
   };
   return (
-    <div className="bg-white flex items-center justify-center mt-20 p-5">
+    <div className="bg-white flex flex-col items-center justify-center mt-20 p-5">
       <div className="bg-white rounded-2xl shadow-lg w-full max-w-md">
         {/* Chat Header */}
         <div className="bg-amber-700 text-white p-4 rounded-t-2xl">
@@ -153,6 +153,16 @@ export const AppointmentChat = () => {
           </div>
         </form>
       </div>
+      {/* Link a form */}
+      <span className="text-xs text-gray-300">
+        Si prefieres programar tu cita manualmente,{" "}
+        <a
+          href="/form"
+          className="underline hover:text-blue-300 cursor-pointer"
+        >
+          haz clic aquí
+        </a>
+      </span>
     </div>
   );
 };
