@@ -55,10 +55,10 @@ export const AppointmentForm = () => {
     formState: { errors },
   } = useForm();
 
-  const barberOptions = useMemo(
-    () => barbersData?.getBarbers?.map((barber) => barber.name) || [],
-    [barbersData]
-  );
+  const barberOptions = useMemo(() => {
+    const names = barbersData?.getBarbers?.map((barber) => barber.name) || [];
+    return ["No tengo preferencia", ...names];
+  }, [barbersData]);
 
   const businessHours = useMemo(
     () => businessHoursData?.getBusinessHours || null,
