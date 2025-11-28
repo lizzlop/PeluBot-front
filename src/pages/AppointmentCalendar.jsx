@@ -27,6 +27,7 @@ export const AppointmentCalendar = () => {
     data: getAppData,
     error: getAppError,
     loading: getAppLoading,
+    refetch: refetchAppointments,
   } = useQuery(GET_APPOINTMENTS);
 
   const handleClickBarber = (barber) => {
@@ -35,16 +36,21 @@ export const AppointmentCalendar = () => {
     if (barber == "Todos") {
       appointmentsByBarber = appointments;
     } else {
-      appointmentsByBarber = appointments.filter((app) => app.barber == barber);
+      appointmentsByBarber = appointments.filter(
+        (app) => app.extendedProps.barber == barber
+      );
     }
     setEvents(appointmentsByBarber);
   };
 
   const handleEventClick = (clickInfo) => {
-    console.log("🎉 clickInfo", clickInfo);
     setSelectedEvent(clickInfo.event);
     setIsModalOpen(true);
   };
+
+  useEffect(() => {
+    refetchAppointments();
+  }, []);
 
   useEffect(() => {
     if (getAppData?.getAppointments) {
@@ -77,7 +83,7 @@ export const AppointmentCalendar = () => {
     }
   }, [getAppError, getBarbersError]);
 
-  if (getAppLoading) return <Loader />;
+  if (getAppLoading || getBarbersLoading) return <Loader />;
 
   return (
     <div className="p-4">

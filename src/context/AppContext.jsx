@@ -5,8 +5,6 @@ const AppContext = createContext();
 
 const appReducer = (store, action) => {
   switch (action.type) {
-    case "SET_LOADING":
-      return { ...store, loading: action.payload };
     case "ADD_CHAT_MESSAGE":
       return { ...store, messages: [...store.messages, action.payload] };
     default:
